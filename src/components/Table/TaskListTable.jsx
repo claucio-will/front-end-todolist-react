@@ -13,6 +13,7 @@ class TaskListTable extends Component {
         }
 
         this.onDeleteHadler = this.onDeleteHadler.bind(this);
+        this.onStatusChangeHandler = this.onStatusChangeHandler.bind(this);
     }
 
     componentDidMount() {
@@ -32,6 +33,12 @@ class TaskListTable extends Component {
         }
     }
 
+    onStatusChangeHandler(task) {
+        task.done = !task.done;
+        TaskService.save(task);
+        this.listTasks();
+    }
+
 
     render() {
         return (
@@ -40,7 +47,9 @@ class TaskListTable extends Component {
                     <TableHeader />
                     {this.state.tasks.length > 0 ? <TableBody
                         tasks={this.state.tasks}
-                        onDelete={this.onDeleteHadler} /> :
+                        onDelete={this.onDeleteHadler}
+                        onStatusChange={this.onStatusChangeHandler}
+                    /> :
                         <EmptyTableBody />}
                 </table>
                 <ToastContainer autoClose={2000} />
@@ -71,9 +80,12 @@ const TableBody = (props) => {
         <tbody>
             {props.tasks.map(task =>
                 <tr key={task.id}>
-                    <td><input type="checkbox" checked={task.done} /></td>
-                    <td>{task.description}</td>
-                    <td>{task.whenToDo}</td>
+                    <td><input type="checkbox"
+                        checked={task.done}
+                        onChange={() => props.onStatusChange(task)}
+                    /></td>
+                    <td >{task.done ? <s>{task.description}</s> : task.description}</td>
+                    <td> {task.done ? <s>{task.whenToDo}</s> : task.whenToDo}</td>
                     <td>
                         <input className="btn btn-success" type="button" value="Editar" />
                         &nbsp;&nbsp;
@@ -81,6 +93,7 @@ const TableBody = (props) => {
                             type="button"
                             value="Excluir"
                             onClick={() => props.onDelete(task.id)}
+                            
                         />
                     </td>
                 </tr>
