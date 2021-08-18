@@ -18,7 +18,13 @@ class TaskService {
     }
 
     save(task) {
-        this.tasks.map(t => task.id !== t.id ? t : task);
+        if (task.id !== 0) {
+            this.tasks.map(t => task.id !== t.id ? t : task);
+        } else {
+            const id = Math.max(...this.tasks.map(t => t.id)) + 1;
+            task.id = id;
+            this.tasks.push(task);
+        }
     }
 }
 

@@ -52,7 +52,7 @@ class TaskListTable extends Component {
                     /> :
                         <EmptyTableBody />}
                 </table>
-                <ToastContainer autoClose={2000} />
+                <ToastContainer autoClose={2000} position="bottom-left" />
             </>
 
         );
