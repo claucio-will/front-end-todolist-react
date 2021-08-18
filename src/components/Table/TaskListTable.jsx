@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import TaskService from "../../api/TaskService";
+import {Redirect} from 'react-router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -9,11 +10,13 @@ class TaskListTable extends Component {
         super(props);
 
         this.state = {
-            tasks: []
+            tasks: [],
+            editId: 0
         }
 
         this.onDeleteHadler = this.onDeleteHadler.bind(this);
         this.onStatusChangeHandler = this.onStatusChangeHandler.bind(this);
+        this.onEditHandler = this.onEditHandler.bind(this);
     }
 
     componentDidMount() {
@@ -23,6 +26,10 @@ class TaskListTable extends Component {
 
     listTasks() {
         this.setState({ tasks: TaskService.list() });
+    }
+
+    onEditHandler(id) {
+        this.setState({ editId: id });
     }
 
     onDeleteHadler(id) {
@@ -41,6 +48,14 @@ class TaskListTable extends Component {
 
 
     render() {
+   
+        if (this.state.editId > 0) {
+            return (
+                <Redirect to={`/form/${this.state.editId}`}/>
+            );
+        }
+
+
         return (
             <>
                 <table className="table table-striped" >
@@ -48,6 +63,7 @@ class TaskListTable extends Component {
                     {this.state.tasks.length > 0 ? <TableBody
                         tasks={this.state.tasks}
                         onDelete={this.onDeleteHadler}
+                        onEdit={this.onEditHandler}
                         onStatusChange={this.onStatusChangeHandler}
                     /> :
                         <EmptyTableBody />}
@@ -87,7 +103,12 @@ const TableBody = (props) => {
                     <td >{task.done ? <s>{task.description}</s> : task.description}</td>
                     <td> {task.done ? <s>{task.whenToDo}</s> : task.whenToDo}</td>
                     <td>
-                        <input className="btn btn-success" type="button" value="Editar" />
+                        <input
+                            className="btn btn-success"
+                            type="button"
+                            value="Editar"
+                            onClick={() => props.onEdit(task.id)}
+                        />
                         &nbsp;&nbsp;
                         <input className="btn btn-dark"
                             type="button"

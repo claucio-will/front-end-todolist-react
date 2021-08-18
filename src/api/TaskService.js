@@ -13,13 +13,16 @@ class TaskService {
         return this.tasks;
     }
 
+    load(id) {
+        return this.tasks.filter(t => t.id === id)[0];  
+    }    
     delete(id) {
         this.tasks = this.tasks.filter(task => task.id !== id);
     }
 
     save(task) {
         if (task.id !== 0) {
-            this.tasks.map(t => task.id !== t.id ? t : task);
+         this.tasks = this.tasks.map(t => task.id !== t.id ? t : task);
         } else {
             const id = Math.max(...this.tasks.map(t => t.id)) + 1;
             task.id = id;

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import TaskService from "../../api/TaskService";
-import {Redirect} from 'react-router';
+import { Redirect } from 'react-router';
 
 class CreateTasks extends Component {
 
@@ -13,11 +13,21 @@ class CreateTasks extends Component {
                 description: "",
                 whenToDo: ""
             },
-            redirect: false
+            redirect: false,
+            buttonName: "Cadastrar"
         }
         this.onSubmitHandler = this.onSubmitHandler.bind(this);
         this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
 
+    }
+
+    componentDidMount() {
+        const editId = this.props.match.params.id;
+        if (editId) {
+            const task = TaskService.load(~~editId);
+            this.setState({ task: task, buttonName: "Editar" });
+
+        }
     }
 
     onSubmitHandler(event) {
@@ -29,33 +39,46 @@ class CreateTasks extends Component {
     onInputChangeHandler(event) {
         const field = event.target.name;
         const value = event.target.value;
-        this.setState(prevState =>({ task: {...prevState.task, [field]: value }}));
-    
+        this.setState(prevState => ({ task: { ...prevState.task, [field]: value } }));
+
     }
-    
+
     render() {
-  
+
         if (this.state.redirect) {
-            return (
-                <Redirect to="/" />
-            );
-       }
+            return <Redirect to="/" />
+        }
         return (
             <>
                 <h1>Nova Tarefa</h1>
                 <form onSubmit={this.onSubmitHandler}>
-                    <div>
-                        <label for="description" className="form-label">Descriçao:</label>
-                        <input onChange={this.onInputChangeHandler} type="text" name="description" className="form-control" />
+                    <div className="form-group">
+                        <label htmlFor="description">Descriçao:</label>
+                        <input
+                            placeholder="Digite a descrição"
+                            onChange={this.onInputChangeHandler}
+                            type="text"
+                            name="description"
+                            value={this.state.task.description}
+                            className="form-control" />
                     </div>
-                    <div>
-                        <label for="whenToDo" className="form-label">Data:</label>
-                        <input onChange={this.onInputChangeHandler} type="date" name="whenToDo" className="form-control" />
+                    <div className="form-group">
+                        <label htmlFor="whenToDo">Data:</label>
+                        <input
+                            onChange={this.onInputChangeHandler}
+                            type="date"
+                            name="whenToDo"
+                            value={this.state.task.whenToDo}
+                            className="form-control" />
                     </div>
                     <br />
-                    <button type="submit" className="btn btn-success">Cadastrar</button>
+                    <button type="submit" className="btn btn-success">{this.state.buttonName}</button>
                     &nbsp;&nbsp;
-                    <button type="button" className="btn btn-dark">Voltar</button>
+                    <button
+                        type="button"
+                        className="btn btn-dark"
+                        onClick={() => this.setState({redirect: true})}
+                    >Cancelar</button>
                 </form>
             </>
         );
