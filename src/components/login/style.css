@@ -1,0 +1,10 @@
+.myContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.aligmentItem {
+    margin-left: 55px;
+}

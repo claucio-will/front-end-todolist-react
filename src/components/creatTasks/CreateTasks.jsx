@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import TaskService from "../../api/TaskService";
 import { Redirect } from 'react-router';
+import AuthService from "../../api/AuthService";
 
 class CreateTasks extends Component {
 
@@ -44,6 +45,11 @@ class CreateTasks extends Component {
     }
 
     render() {
+
+        if (!AuthService.isAuthententicated()) {
+            return <Redirect to="/login" />
+        }
+   
 
         if (this.state.redirect) {
             return <Redirect to="/" />
